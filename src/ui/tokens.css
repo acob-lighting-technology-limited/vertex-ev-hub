@@ -1,0 +1,81 @@
+/*
+ * Vertex EV Hub design tokens. Same system as Vertex Electric (shared
+ * components, type and motion), re-keyed to the EV Hub accent: the
+ * orange-red from the company's business card and logo.
+ *
+ * The accent scale keeps the --vx-blue-* names so components shared with
+ * vertexelectricsolutions.com work unchanged; here those slots hold orange.
+ *
+ * Contrast (WCAG 2.2):
+ *   white on --vx-blue-600 (#d23b13) ≈ 4.75:1 — buttons
+ *   --vx-blue-300 (#ff8a65) on dark ground 8.7:1 — accent text
+ *   --vx-blue-700 (#b8330c) on light ground 6.0:1 — accent text
+ * The card's own #e8461e is only 3.9:1 under white text, so it is used for
+ * fills and large display marks only, never behind body text.
+ */
+:root {
+  /* Accent scale (orange-red) */
+  --vx-blue-300: #ff8a65;
+  --vx-blue-400: #ff6a3d;
+  --vx-blue-500: #e8461e; /* card orange */
+  --vx-blue-600: #d23b13;
+  --vx-blue-700: #b8330c;
+  --vx-blue-900: #7a1f05;
+  --vx-ink: #050505;
+  --vx-paper: #f7f6f4;
+
+  --vx-graphite-950: #070606;
+  --vx-graphite-900: #0e0c0b;
+  --vx-graphite-850: #161312;
+  --vx-graphite-800: #1f1b19;
+  --vx-graphite-400: #a8a19c;
+  --vx-slate-600: #57504b;
+  --vx-slate-100: #ece9e6;
+  --vx-slate-50: #f7f6f4;
+
+  --vx-blade: linear-gradient(135deg, var(--vx-blue-400) 0%, var(--vx-blue-600) 55%, var(--vx-blue-900) 100%);
+  --vx-blade-angle: 135deg;
+
+  --vx-dur-fast: 160ms;
+  --vx-dur: 320ms;
+  --vx-dur-slow: 700ms;
+
+  --vx-radius-sm: 4px;
+  --vx-radius: 8px;
+  --vx-radius-lg: 14px;
+}
+
+:root,
+[data-theme="dark"] {
+  --vx-scheme: dark;
+  --vx-bg: var(--vx-graphite-950);
+  --vx-surface: var(--vx-graphite-900);
+  --vx-surface-2: var(--vx-graphite-850);
+  --vx-fg: #f6f3f1;
+  --vx-muted: var(--vx-graphite-400);
+  --vx-line: rgb(255 255 255 / 0.08);
+  --vx-line-strong: rgb(255 255 255 / 0.16);
+  --vx-accent: var(--vx-blue-600);
+  --vx-accent-text: var(--vx-blue-300);
+  --vx-on-accent: #ffffff;
+  --vx-logo-ink: var(--vx-paper);
+  --vx-glow: rgb(232 70 30 / 0.32);
+  --scrollbar-thumb: var(--vx-accent);
+}
+
+[data-theme="light"] {
+  --vx-scheme: light;
+  --vx-bg: var(--vx-slate-50);
+  --vx-surface: #ffffff;
+  --vx-surface-2: var(--vx-slate-100);
+  --vx-fg: #0d0b0a;
+  --vx-muted: var(--vx-slate-600);
+  --vx-line: rgb(13 11 10 / 0.1);
+  --vx-line-strong: rgb(13 11 10 / 0.18);
+  --vx-accent: var(--vx-blue-600);
+  --vx-accent-text: var(--vx-blue-700);
+  --vx-on-accent: #ffffff;
+  --vx-logo-ink: var(--vx-ink);
+  --vx-glow: rgb(232 70 30 / 0.18);
+  --scrollbar-thumb: var(--vx-accent);
+}

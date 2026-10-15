@@ -1,0 +1,429 @@
+@import "tailwindcss";
+@import "../ui/tokens.css";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Map the semantic tokens into Tailwind so utilities like bg-surface,
+   text-muted and border-line follow the active theme. */
+@theme inline {
+  --color-bg: var(--vx-bg);
+  --color-surface: var(--vx-surface);
+  --color-surface-2: var(--vx-surface-2);
+  --color-fg: var(--vx-fg);
+  --color-muted: var(--vx-muted);
+  --color-line: var(--vx-line);
+  --color-line-strong: var(--vx-line-strong);
+  --color-accent: var(--vx-accent);
+  --color-accent-text: var(--vx-accent-text);
+  --color-on-accent: var(--vx-on-accent);
+  --color-blue-400: var(--vx-blue-400);
+  --color-blue-600: var(--vx-blue-600);
+  --color-blue-900: var(--vx-blue-900);
+  --color-ink: var(--vx-ink);
+  --color-paper: var(--vx-paper);
+
+  /* shadcn/ui semantic names, mapped onto the Vertex tokens. (shadcn's bg-muted is not
+     mapped: --color-muted is Vertex's muted *text* colour; shadcn files use surface-2.) */
+  --color-background: var(--vx-bg);
+  --color-foreground: var(--vx-fg);
+  --color-border: var(--vx-line);
+  --color-input: var(--vx-line-strong);
+  --color-ring: var(--vx-accent-text);
+  --color-primary: var(--vx-accent);
+  --color-primary-foreground: var(--vx-on-accent);
+  --color-secondary: var(--vx-surface-2);
+  --color-secondary-foreground: var(--vx-fg);
+  --color-muted-foreground: var(--vx-muted);
+  --color-accent-foreground: var(--vx-on-accent);
+  --color-destructive: var(--vx-danger);
+  --color-popover: var(--vx-surface);
+  --color-popover-foreground: var(--vx-fg);
+
+  --font-display: var(--font-unbounded);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+
+  --ease-blade: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  background: var(--vx-bg);
+  color: var(--vx-fg);
+  color-scheme: var(--vx-scheme);
+  --scrollbar-thumb: var(--vx-accent);
+}
+
+body {
+  background: var(--vx-bg);
+  color: var(--vx-fg);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page & element scrollbar ─────────────────────────────────────────────
+   Matches ACOB custom styled scrollbars: 0.3em slim profile, transparent track,
+   accent thumb with darkened hover state, hidden scroll buttons, and transparent corner.
+─────────────────────────────────────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, var(--vx-accent)) transparent;
+}
+
+/* ── Opt-out: scroller with no visible bar ──────────────────────────────── */
+.scrollbar-none {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+::-webkit-scrollbar {
+  width: 0.3em !important;
+  height: 0.3em !important;
+  background: transparent !important;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
+  background: transparent !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, var(--vx-accent)) !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background-clip: border-box !important;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklch, var(--scrollbar-thumb, var(--vx-accent)) 85%, black) !important;
+}
+
+html::-webkit-scrollbar-button,
+body::-webkit-scrollbar-button,
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+}
+
+html::-webkit-scrollbar-button:vertical:start:decrement,
+html::-webkit-scrollbar-button:vertical:end:increment,
+body::-webkit-scrollbar-button:vertical:start:decrement,
+body::-webkit-scrollbar-button:vertical:end:increment,
+::-webkit-scrollbar-button:vertical:start:decrement,
+::-webkit-scrollbar-button:vertical:end:increment {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+}
+
+html::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-corner,
+::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+::selection {
+  background: var(--vx-blue-600);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--vx-accent-text);
+  outline-offset: 3px;
+}
+
+/* ---------- Intro curtain (first page view per session) ----------
+   Pure CSS so it runs before hydration with no flash. An inline script in
+   the root layout sets html[data-intro="seen"] on later views. */
+.vx-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: #070606;
+  pointer-events: none;
+  animation: vx-curtain 0.8s cubic-bezier(0.76, 0, 0.24, 1) 1.15s forwards;
+}
+.vx-intro__logo {
+  width: min(62vw, 520px);
+  clip-path: inset(0 100% 0 0);
+  animation: vx-wipe 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+.vx-intro__bar {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  height: 2px;
+  width: min(40vw, 320px);
+  translate: -50% 0;
+  transform-origin: left;
+  scale: 0 1;
+  background: var(--vx-blade);
+  animation: vx-bar 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+html[data-intro="seen"] .vx-intro {
+  display: none;
+}
+@keyframes vx-wipe {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes vx-bar {
+  to {
+    scale: 1 1;
+  }
+}
+@keyframes vx-curtain {
+  to {
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+  }
+}
+
+@keyframes vx-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Route transitions (React <ViewTransition>) ---------- */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+::view-transition-group(.morph) {
+  animation-duration: 500ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: vx-via-blur;
+}
+::view-transition-old(.nav-forward) {
+  --slide-offset: -60px;
+  animation:
+    160ms ease-in both vx-fade reverse,
+    420ms cubic-bezier(0.22, 1, 0.36, 1) both vx-slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 60px;
+  animation:
+    240ms ease-out 140ms both vx-fade,
+    420ms cubic-bezier(0.22, 1, 0.36, 1) both vx-slide;
+}
+::view-transition-old(.nav-back) {
+  --slide-offset: 60px;
+  animation:
+    160ms ease-in both vx-fade reverse,
+    420ms cubic-bezier(0.22, 1, 0.36, 1) both vx-slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -60px;
+  animation:
+    240ms ease-out 140ms both vx-fade,
+    420ms cubic-bezier(0.22, 1, 0.36, 1) both vx-slide;
+}
+::view-transition-old(.page-fade) {
+  animation: 180ms ease-in both vx-fade reverse;
+}
+::view-transition-new(.page-fade) {
+  animation: 320ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both vx-rise;
+}
+@keyframes vx-via-blur {
+  30% {
+    filter: blur(4px);
+  }
+}
+@keyframes vx-fade {
+  from {
+    filter: blur(4px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+@keyframes vx-slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+@keyframes vx-rise {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    filter: blur(0);
+  }
+}
+
+/* ---------- Native <dialog> entrance (photo viewer) ---------- */
+dialog.vx-dialog {
+  opacity: 0;
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    display 0.35s allow-discrete,
+    overlay 0.35s allow-discrete;
+}
+dialog.vx-dialog[open] {
+  opacity: 1;
+}
+@starting-style {
+  dialog.vx-dialog[open] {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vx-intro {
+    display: none;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Underline that draws in from the left on hover/focus. */
+@utility link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s;
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  &::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+  }
+}
+
+@utility scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, var(--vx-accent)) transparent;
+  &::-webkit-scrollbar {
+    width: 0.3em !important;
+    height: 0.3em !important;
+    background: transparent !important;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb, var(--vx-accent)) !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklch, var(--scrollbar-thumb, var(--vx-accent)) 85%, black) !important;
+  }
+  &::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+}
+
+/* Range slider: blade-blue fill up to the thumb (--pct set inline). */
+.vx-range {
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--vx-blue-400), var(--vx-blue-600)) 0 / var(--pct, 50%) 100% no-repeat, var(--vx-line-strong);
+  cursor: pointer;
+}
+.vx-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid var(--vx-blue-600);
+  box-shadow: 0 0 0 6px var(--vx-glow);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.vx-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 4px solid var(--vx-blue-600);
+  box-shadow: 0 0 0 6px var(--vx-glow);
+}
+.vx-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.vx-range:focus-visible {
+  outline: 2px solid var(--vx-accent-text);
+  outline-offset: 6px;
+}
+
+/* Background videos are decorative: never show the browser's own play/controls overlay
+   (iOS Safari draws a big play button when autoplay is refused). */
+.vx-bg-video::-webkit-media-controls,
+.vx-bg-video::-webkit-media-controls-start-playback-button,
+.vx-bg-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
