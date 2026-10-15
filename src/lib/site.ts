@@ -30,6 +30,15 @@ export function whatsappHref(message: string) {
   return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(message)}`;
 }
 
+/** Sister site that sells the EVs, bikes and home chargers. */
+export const sister = {
+  name: "Vertex Electric Solutions",
+  short: "Vertex Electric",
+  blurb: "EVs & home chargers",
+  href: site.vertexElectric,
+  dot: "#3b8bff",
+};
+
 export const nav = [
   { href: "/network", label: "Network" },
   { href: "/business", label: "For business" },
